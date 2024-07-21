@@ -1,10 +1,10 @@
 import CreatePost from "./CreatePost";
 import PostList from "./PostList";
-const MainContent = ({selectedTab}) =>{
+const MainContent = ({selectedTab,setSelectedTab}) =>{
     return (
-        <>
-        {selectedTab === "Home" ? <PostList></PostList> :<CreatePost></CreatePost>}
-        </>
+        <center>
+        {selectedTab === "Home" ? <PostList></PostList> :<CreatePost setSelectedTab={setSelectedTab}></CreatePost>}
+        </center>
         
     );
 }

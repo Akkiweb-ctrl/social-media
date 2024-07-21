@@ -4,3 +4,20 @@
 .content-container{
   width: 100%;
 }
+.posts{
+  margin:1rem;
+}
+.tag{
+  margin:0 0.25rem;
+  padding: 0.5rem;
+}
+.reactions{
+  margin-top:1rem;
+}
+.create-post{
+  width:30%;
+  margin-top:2rem;
+}
+.deleteBtn{
+  cursor: pointer;
+}
