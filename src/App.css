@@ -21,3 +21,6 @@
 .deleteBtn{
   cursor: pointer;
 }
+.no-posts{
+  margin:2rem 0;
+}
