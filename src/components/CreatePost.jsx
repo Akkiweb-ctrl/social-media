@@ -1,41 +1,18 @@
 import { useContext, useRef } from "react";
 import { PostListContext } from "../store/PostListContext";
+import { Form, redirect, useActionData, useNavigate } from "react-router-dom";
+let submitted=false;
 
-const CreatePost = ({ setSelectedTab }) => {
+const CreatePost = () => {
   const { addPost } = useContext(PostListContext);
-  const inputForm = useRef(null);
-  const handleSubmitButton = () => {
-    event.preventDefault();
-    const form = inputForm.current;
+  const data= useActionData();
+  if(!submitted===false){
+    // console.log(data);
+    addPost(data);
+  }
 
-    const newPostData = {
-      title: form["inputTitle"].value,
-      body: form["inputBody"].value,
-      tags: form["inputTags"].value.split(" "),
-      userId: form["inputUserId"].value,
-    };
-
-    fetch("https://dummyjson.com/posts/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...newPostData,
-        /* other post data */
-      }),
-    })
-      .then((res) => res.json())
-      .then((post) => {
-        
-        addPost(post);
-      });
-
-    setSelectedTab("Home");
-    form["inputTitle"].value= ""
-    form["inputBody"].value=""
-    form["inputTags"].value=""
-  };
-  return (
-    <form ref={inputForm} className="create-post">
+   return (
+    <Form method = "POST" className="create-post">
       <div className="mb-3">
         <label htmlFor="exampleInputTitle" className="form-label">
           Title
@@ -43,7 +20,7 @@ const CreatePost = ({ setSelectedTab }) => {
         <input
           type="text"
           className="form-control"
-          name="inputTitle"
+          name="title"
           placeholder="Enter your title here..."
         />
       </div>
@@ -55,7 +32,7 @@ const CreatePost = ({ setSelectedTab }) => {
           rows={4}
           type="text"
           className="form-control"
-          name="inputBody"
+          name="body"
           placeholder="Enter your body here..."
         />
       </div>
@@ -63,11 +40,11 @@ const CreatePost = ({ setSelectedTab }) => {
         <label htmlFor="exampleInputUserId" className="form-label">
           User Id
         </label>
-        <textarea
+        <input
           rows={4}
           type="text"
           className="form-control"
-          name="inputUserId"
+          name="userId"
           placeholder="Enter your user id here..."
         />
       </div>
@@ -78,18 +55,39 @@ const CreatePost = ({ setSelectedTab }) => {
         <input
           type="text"
           className="form-control"
-          name="inputTags"
+          name="tags"
           placeholder="Enter your tags here seperated by space..."
         />
       </div>
       <button
         type="submit"
         className="btn btn-primary"
-        onClick={handleSubmitButton}
       >
         Submit
       </button>
-    </form>
+    </Form>
   );
 };
+
+export const createPostAction = async (data) =>{
+submitted=true;
+  const formData = await data.request.formData();
+  const postData = Object.fromEntries(formData);
+  // console.log(postData);
+
+   return fetch("https://dummyjson.com/posts/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(postData),
+  })
+    .then((res) => res.json())
+    .then((post) => {
+      // addPost(post);
+      // // navigate("/");
+      // return redirect("/");
+      // console.log("post" + post)
+      return post;
+    });
+    
+}
 export default CreatePost;

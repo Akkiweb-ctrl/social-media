@@ -3,6 +3,7 @@ import { MdDelete } from "react-icons/md";
 import { PostListContext } from "../store/PostListContext";
 const Post = ({ post }) => {
     const {deletePost} = useContext(PostListContext);
+    // console.log(post);
   return (
     <div className="card posts" style={{ width: "30rem" }}>
       <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger deleteBtn" onClick={()=>deletePost(post.id)}>

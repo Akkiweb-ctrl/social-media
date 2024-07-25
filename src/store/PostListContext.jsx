@@ -4,7 +4,6 @@ import { createContext } from "react";
 export const PostListContext = createContext({
   postList: [],
   addPost: () => {},
-  fetching : false,
   deletePost: () => {},
 });
 const postListReducer = (currPostList, action) => {
@@ -16,53 +15,30 @@ const postListReducer = (currPostList, action) => {
     // console.log(newList);
   } else if (action.type === "ADD_POST") {
     const newPost = {
-      id: action.payload.newPostData.id,
-      title: action.payload.newPostData.title,
-      body: action.payload.newPostData.body,
+      id: action.payload.id,
+      title: action.payload.title,
+      body: action.payload.body,
       reactions: 0,
-      userId: action.payload.newPostData.userId,
-      tags: action.payload.newPostData.tags,
+      userId: action.payload.userId,
+      tags: action.payload.tags.split(" "),
     };
     newList = [newPost, ...currPostList];
+    // console.log(newList);
   }
   return newList;
 };
 
 const PostListContextProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
-  const [fetching, setFetching] = useState(false);
-
-  useEffect(() => {
-    setFetching(true);
-    const controller = new AbortController();
-    const signal = controller.signal;
-    fetch("https://dummyjson.com/posts", { signal })
-      .then((res) => res.json())
-      .then((data) => {
-        addInitialPosts(data.posts);
-          setFetching(false);
-      });
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   const addPost = (newPostData) => {
+    // console.log(newPostData.id);
     dispatchPostList({
       type: "ADD_POST",
-      payload: {
-        newPostData,
-      },
+      payload: newPostData,
     });
   };
-  const addInitialPosts = (newPostData) => {
-    dispatchPostList({
-      type: "ADD_INITIAL_POSTS",
-      payload: {
-        newPostData,
-      },
-    });
-  };
+
   const deletePost = (postId) => {
     dispatchPostList({
       type: "DELETE_POST",
@@ -72,9 +48,7 @@ const PostListContextProvider = ({ children }) => {
     });
   };
   return (
-    <PostListContext.Provider
-      value={{ postList, addPost, deletePost, fetching }}
-    >
+    <PostListContext.Provider value={{ postList, addPost, deletePost }}>
       {children}
     </PostListContext.Provider>
   );

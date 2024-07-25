@@ -1,17 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import Post from "./Post";
 import { PostListContext } from "../store/PostListContext";
+import { useLoaderData } from "react-router-dom";
 const PostList = () => {
-  const { postList,fetching } = useContext(PostListContext);
-
+  const postList = useLoaderData();
   return (
-    <>
-      {fetching && (
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      )}
-      {!fetching && postList.length === 0 && (
+    <>     
+      {postList.length === 0 && (
         <div className="no-posts">
           <h2>There are no posts</h2>
           <button type="button" className="btn btn-primary">
@@ -19,10 +14,19 @@ const PostList = () => {
           </button>
         </div>
       )}
-      {postList.map((post) => {
-        return <Post key={post.id} post={post}></Post>;
-      })}
+      {postList.map((post) => (
+         <Post key={post.id} post={post}></Post>
+      ))}
     </>
   );
 };
+
+export const postLoader = () =>{
+    return fetch("https://dummyjson.com/posts" )
+      .then((res) => res.json())
+      .then((data) => {
+          return data.posts;
+      });
+};
 export default PostList;
+
